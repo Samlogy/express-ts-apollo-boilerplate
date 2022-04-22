@@ -1,13 +1,16 @@
 import express, { Application, NextFunction, Request, Response } from 'express'
+import { ApolloServer } from 'apollo-server-express'
 
 import config from './config'
 import { globalErrorHandler } from './controllers/errorController'
-import route from './routes/route'
+// import route from './routes/route'
 import { AppError } from './utils/appError'
 import corsOptions from './utils/corsOptions'
-import dbPrisma from './utils/connectPrisma'
-import dbMongo from './utils/connectMongo'
-import cache from './utils/cache'
+// import dbPrisma from './utils/connectPrisma'
+// import dbMongo from './utils/connectMongo'
+// import cache from './utils/cache'
+import typeDefs from './graphql/schemas'
+import resolvers from './graphql/resolvers'
 require('dotenv').config({ path: './config.dev.env' })
 
 const port = config.port as number
@@ -46,8 +49,17 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 // Global Error handling middleware
 app.use(globalErrorHandler)
 
-app.listen(port, host, () => {
-    console.log(`server`)
+app.listen(port, host, async () => {
+    console.log(`Express 🚀`)
+
+    const server = new ApolloServer({ typeDefs, resolvers })
+    await server.start()
+
+    server.applyMiddleware({ app })
+
+    await new Promise((r: any) => app.listen({ port: 5000 }, r))
+
+    console.log(`graphQL 🚀`)
 
     // connect to MongoDB
     // dbMongo()
@@ -56,7 +68,7 @@ app.listen(port, host, () => {
     // dbPrisma
 
     // cache DB
-    cache
+    // cache
 
     // Routes
     // route('/api', app)

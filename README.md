@@ -19,3 +19,4 @@ launch project -> TEST
 6. Redis --> cache
 7. Global error handling
 8. Prisma ORM --> database (PostgreSQL)
+9. Apollo server --> graphQL API
