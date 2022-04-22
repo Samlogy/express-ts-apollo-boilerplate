@@ -1,5 +1,4 @@
 import express, { Application, NextFunction, Request, Response } from 'express'
-import { ApolloServer } from 'apollo-server-express'
 
 import config from './config'
 import { globalErrorHandler } from './controllers/errorController'
@@ -11,10 +10,12 @@ import corsOptions from './utils/corsOptions'
 // import cache from './utils/cache'
 import typeDefs from './graphql/schemas'
 import resolvers from './graphql/resolvers'
+import connectApollo from './utils/connectApollo'
 require('dotenv').config({ path: './config.dev.env' })
 
 const port = config.port as number
 const host = config.host as string
+const graphql_port = config.graphql_port as number
 
 const app: Application = express()
 
@@ -52,14 +53,9 @@ app.use(globalErrorHandler)
 app.listen(port, host, async () => {
     console.log(`Express 🚀`)
 
-    const server = new ApolloServer({ typeDefs, resolvers })
-    await server.start()
-
-    server.applyMiddleware({ app })
-
-    await new Promise((r: any) => app.listen({ port: 5000 }, r))
-
-    console.log(`graphQL 🚀`)
+    // apollo graphQL server
+    // startServer(typeDefs, resolvers)
+    connectApollo(app, typeDefs, resolvers)
 
     // connect to MongoDB
     // dbMongo()

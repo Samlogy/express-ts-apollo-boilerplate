@@ -1,4 +1,5 @@
 export default {
+    graphql_port: 5000,
     port: 4000,
     host: 'localhost',
     dbUri: 'mongodb://localhost:27017/express-ts',
